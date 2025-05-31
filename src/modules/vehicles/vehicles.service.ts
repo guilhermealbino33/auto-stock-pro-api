@@ -5,6 +5,7 @@ import {
   createVehicle,
   updateVehicle,
   updateVehicleStatus,
+  Vehicle,
 } from '@/lib/database';
 
 @Injectable()
@@ -44,7 +45,7 @@ export class VehiclesService {
     return updateVehicle(vehicleId, userId, data);
   }
 
-  async updateVehicleStatus(vehicleId: string, status: string) {
+  async updateVehicleStatus(vehicleId: string, status: Vehicle['status']) {
     return updateVehicleStatus(vehicleId, status);
   }
 }

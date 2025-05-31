@@ -2,11 +2,15 @@ import { neon } from '@neondatabase/serverless';
 import jwt from 'jsonwebtoken';
 
 // Verificar se a variável de ambiente existe
-if (!process.env.DATABASE_URL) {
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
   throw new Error('DATABASE_URL não está definida');
 }
 
-const sql = neon(process.env.DATABASE_URL);
+// use databaseUrl para conectar
+
+const sql = neon(databaseUrl);
 
 // Modelo básico de usuário
 export type User = {
