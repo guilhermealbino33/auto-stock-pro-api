@@ -1,5 +1,3 @@
-
 export class ForgotPasswordDTO {
-    email: string
-  }
-  
+  email: string;
+}

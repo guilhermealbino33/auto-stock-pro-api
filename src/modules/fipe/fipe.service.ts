@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   getFipeBrands,
   getFipeModels,
@@ -6,10 +10,7 @@ import {
   getFipeValue,
   parseFipeValue,
 } from '@/lib/fipe-api';
-import {
-  cacheFipeValue,
-  getCachedFipeValue,
-} from '@/lib/database';
+import { cacheFipeValue, getCachedFipeValue } from '@/lib/database';
 
 @Injectable()
 export class FipeService {
@@ -45,14 +46,18 @@ export class FipeService {
     modelCode: string,
     yearCode: string,
     brandName?: string,
-    modelName?: string,
+    modelName?: string
   ) {
     try {
       const year = Number.parseInt(yearCode);
 
       // 1. Check cache
       if (brandName && modelName) {
-        const cachedValue = await getCachedFipeValue(brandName, modelName, year);
+        const cachedValue = await getCachedFipeValue(
+          brandName,
+          modelName,
+          year
+        );
         if (cachedValue) {
           return { value: cachedValue, cached: true };
         }
@@ -74,7 +79,7 @@ export class FipeService {
           year,
           fipeData.CodigoFipe,
           numericValue,
-          fipeData.MesReferencia,
+          fipeData.MesReferencia
         );
       }
 

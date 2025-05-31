@@ -1,11 +1,6 @@
-import {
-  Controller,
-  Get,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { FipeService } from './fipe.service';
 import { GetModelsDTO, GetValueDTO, GetYearsDTO } from './dto';
-
 
 @Controller('fipe')
 export class FipeController {

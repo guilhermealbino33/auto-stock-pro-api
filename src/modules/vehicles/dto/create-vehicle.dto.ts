@@ -1,24 +1,23 @@
-
-import { IsString, IsNumber, IsOptional } from 'class-validator'
+import { IsString, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateVehicleDTO {
   @IsString()
-  brand: string
+  brand: string;
 
   @IsString()
-  model: string
+  model: string;
 
   @IsNumber()
-  year: number
+  year: number;
 
   @IsNumber()
-  price: number
+  price: number;
 
   @IsOptional()
   @IsString()
-  color?: string
+  color?: string;
 
   @IsOptional()
   @IsString()
-  plate?: string
+  plate?: string;
 }
