@@ -41,6 +41,45 @@ src/
 └── common/         # Utilitários comuns
 ```
 
+## 🚗 Módulo de Veículos
+
+O módulo de veículos oferece endpoints para gestão completa do estoque:
+
+### Endpoints Disponíveis
+
+- **POST /vehicles** - Criar novo veículo
+  - Requer autenticação
+  - Corpo: dados do veículo
+
+- **GET /vehicles/:id** - Buscar veículo por ID
+  - Requer autenticação
+  - Parâmetros: `id` do veículo
+
+- **PUT /vehicles/:id** - Atualizar veículo
+  - Requer autenticação
+  - Parâmetros: `id` do veículo
+  - Corpo: dados atualizados do veículo
+
+- **PUT /vehicles/:id/status** - Atualizar status do veículo
+  - Requer autenticação
+  - Parâmetros: `id` do veículo
+  - Corpo: `status` (valores válidos: 'available', 'reserved', 'sold')
+
+### Upload de Imagens
+
+O módulo suporta upload de imagens através do Multer:
+- Configurado para salvar em `./uploads`
+- Suporte a múltiplos arquivos
+- Validação de tipos de arquivo permitidos
+
+### Autenticação
+
+Todos os endpoints do módulo de veículos requerem autenticação através do AuthGuard, que:
+- Verifica token JWT no header Authorization
+- Valida o token
+- Adiciona informações do usuário na requisição (`req.user`)
+- Permite acesso apenas a veículos do usuário logado
+
 ## 🔐 Autenticação
 
 - JWT para autenticação
