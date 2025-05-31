@@ -5,11 +5,13 @@ Backend da aplicação AutoStockPro para gestão de estoque de veículos.
 ## 🚀 Tecnologias
 
 - NestJS 10
-- PostgreSQL
+- PostgreSQL (Neon Database)
 - TypeORM
 - JWT
 - Swagger
 - Zod
+- Multer (upload de arquivos)
+- Neon Database Serverless
 
 ## 🛠️ Configuração
 
@@ -22,6 +24,13 @@ npm install
 ```bash
 cp .env.example .env
 # Edite o arquivo .env com suas configurações
+```
+
+O arquivo .env deve conter:
+```
+DATABASE_URL=sua_url_do_banco_neon
+JWT_SECRET=seu_segredo_jwt
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
 3. Inicie o servidor em modo de desenvolvimento:
@@ -37,7 +46,12 @@ src/
 │   ├── auth/       # Autenticação
 │   ├── fipe/       # Integração FIPE
 │   └── vehicles/   # Gestão de veículos
-├── config/         # Configurações
+│       ├── dto/    # DTOs do módulo
+│       ├── service/ # Serviços do módulo
+│       └── controller/ # Controllers do módulo
+├── lib/            # Bibliotecas compartilhadas
+│   ├── auth.ts     # Funções de autenticação
+│   └── database.ts # Configuração do banco
 └── common/         # Utilitários comuns
 ```
 
@@ -84,7 +98,15 @@ Todos os endpoints do módulo de veículos requerem autenticação através do A
 
 - JWT para autenticação
 - BCrypt para hashing de senhas
+- Passport para autenticação
 - Rate limiting para APIs externas
+
+### Endpoints de Autenticação
+
+- **POST /auth/login** - Login de usuário
+- **POST /auth/register** - Registro de novo usuário
+- **POST /auth/forgot-password** - Recuperação de senha
+- **GET /auth/verify** - Verificação de token
 
 ## 📈 Deploy
 
