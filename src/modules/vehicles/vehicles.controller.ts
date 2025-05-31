@@ -14,23 +14,23 @@ import {
 import { AuthGuard } from '@/modules/auth/guards/auth.guard'
 import { Request } from 'express'
 import { VehiclesService } from './vehicles.service'
+import { FindAllVehiclesDTO, CreateVehicleDTO, UpdateVehicleDTO, UpdateVehicleStatusDTO } from './dto'
+
 
 @Controller('vehicles')
 export class VehiclesController {
   constructor(private readonly vehiclesService: VehiclesService) {}
 
   @Get()
-  async findAll(
-    @Query('page') page = '1',
-    @Query('limit') limit = '20',
-  ) {
-    const offset = (parseInt(page) - 1) * parseInt(limit)
-    return this.vehiclesService.getAllVehicles(parseInt(limit), offset)
+  async findAll(@Query() query: FindAllVehiclesDTO) {
+    const { page = 1, limit = 20 } = query
+    const offset = (page - 1) * limit
+    return this.vehiclesService.getAllVehicles(limit, offset)
   }
 
   @UseGuards(AuthGuard)
   @Post()
-  async create(@Req() req: Request, @Body() data: any) {
+  async create(@Req() req: Request, @Body() data: CreateVehicleDTO) {
     const user = req.body.user
     return this.vehiclesService.createVehicle(user.userId, data)
   }
@@ -50,7 +50,7 @@ export class VehiclesController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() data: any,
+    @Body() data: UpdateVehicleDTO,
     @Req() req: Request,
   ) {
     const user = req.body.user
@@ -61,13 +61,9 @@ export class VehiclesController {
   @Put(':id/status')
   async updateStatus(
     @Param('id') id: string,
-    @Body('status') status: string,
+    @Body() data: UpdateVehicleStatusDTO,
   ) {
-    const valid = ['available', 'reserved', 'sold']
-    if (!valid.includes(status)) {
-      throw new HttpException('Status inválido', HttpStatus.BAD_REQUEST)
-    }
-    await this.vehiclesService.updateVehicleStatus(id, status)
+    await this.vehiclesService.updateVehicleStatus(id, data.status)
     return { success: true }
   }
 }
