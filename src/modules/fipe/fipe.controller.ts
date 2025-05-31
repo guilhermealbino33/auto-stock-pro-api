@@ -1,5 +1,11 @@
-import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+} from '@nestjs/common';
 import { FipeService } from './fipe.service';
+import { GetModelsDTO, GetValueDTO, GetYearsDTO } from './dto';
+
 
 @Controller('fipe')
 export class FipeController {
@@ -11,42 +17,18 @@ export class FipeController {
   }
 
   @Get('models')
-  async getModels(@Query('brand') brandCode: string) {
-    if (!brandCode) {
-      throw new BadRequestException('Código da marca é obrigatório');
-    }
-    return this.fipeService.getModels(brandCode);
+  async getModels(@Query() query: GetModelsDTO) {
+    return this.fipeService.getModels(query.brand);
   }
 
   @Get('years')
-  async getYears(
-    @Query('brand') brandCode: string,
-    @Query('model') modelCode: string,
-  ) {
-    if (!brandCode || !modelCode) {
-      throw new BadRequestException('Código da marca e modelo são obrigatórios');
-    }
-    return this.fipeService.getYears(brandCode, modelCode);
+  async getYears(@Query() query: GetYearsDTO) {
+    return this.fipeService.getYears(query.brand, query.model);
   }
 
   @Get('value')
-  async getValue(
-    @Query('brand') brandCode: string,
-    @Query('model') modelCode: string,
-    @Query('year') yearCode: string,
-    @Query('brandName') brandName?: string,
-    @Query('modelName') modelName?: string,
-  ) {
-    if (!brandCode || !modelCode || !yearCode) {
-      throw new BadRequestException('Todos os parâmetros são obrigatórios');
-    }
-
-    return this.fipeService.getValue(
-      brandCode,
-      modelCode,
-      yearCode,
-      brandName,
-      modelName,
-    );
+  async getValue(@Query() query: GetValueDTO) {
+    const { brand, model, year, brandName, modelName } = query;
+    return this.fipeService.getValue(brand, model, year, brandName, modelName);
   }
 }

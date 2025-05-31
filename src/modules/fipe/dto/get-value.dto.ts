@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
-export class GetValueDto {
+export class GetValueDTO {
   @IsString()
   @IsNotEmpty({ message: 'Código da marca é obrigatório' })
   brand: string;
