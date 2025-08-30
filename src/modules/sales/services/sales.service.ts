@@ -12,6 +12,7 @@ import { VehiclesService } from '../../vehicles/services/vehicles.service';
 import { CustomersService } from '../../customers/services/customers.service';
 import { VehicleStatusEnum } from '../../vehicles/enums/vehicle.enum';
 import { SaleStatusEnum } from '../enums/sales.enum';
+import { UsersService } from '@/modules/users';
 
 @Injectable()
 export class SalesService {
@@ -19,10 +20,13 @@ export class SalesService {
     @InjectRepository(Sale)
     private salesRepository: Repository<Sale>,
     private vehiclesService: VehiclesService,
-    private customersService: CustomersService
+    private customersService: CustomersService,
+    private usersService: UsersService
   ) {}
 
   async create(createSaleDto: CreateSaleDTO, userId: number): Promise<Sale> {
+    const user = await this.usersService.findOne(userId);
+
     const vehicle = await this.vehiclesService.findOne({
       id: createSaleDto.vehicle_id,
     });
@@ -58,7 +62,7 @@ export class SalesService {
     const sale = this.salesRepository.create({
       ...createSaleDto,
       profit_projection: profitProjection,
-      created_by_id: userId,
+      user,
     });
 
     await this.vehiclesService.update(createSaleDto.vehicle_id, {
@@ -72,7 +76,7 @@ export class SalesService {
 
   async findAll(): Promise<Sale[]> {
     return this.salesRepository.find({
-      relations: ['vehicle', 'customer', 'trade_in_vehicle', 'created_by'],
+      relations: ['vehicle', 'customer', 'trade_in_vehicle', 'user'],
       order: { created_at: 'DESC' },
     });
   }
@@ -80,7 +84,7 @@ export class SalesService {
   async findOne(id: number): Promise<Sale> {
     const sale = await this.salesRepository.findOne({
       where: { id },
-      relations: ['vehicle', 'customer', 'trade_in_vehicle', 'created_by'],
+      relations: ['vehicle', 'customer', 'trade_in_vehicle', 'user'],
     });
 
     if (!sale) {
@@ -91,6 +95,11 @@ export class SalesService {
   }
 
   async update(id: number, updateSaleDto: UpdateSaleDto): Promise<Sale> {
+    /**
+     * @todo
+     *
+     * implementar user_id
+     */
     const sale = await this.salesRepository.findOne({ where: { id } });
 
     if (!sale) {
@@ -124,7 +133,7 @@ export class SalesService {
     const sale = await this.findOne(id);
 
     // Liberar veículo se venda for cancelada/removida
-    if (sale.status !== SaleStatus.COMPLETED) {
+    if (sale.status !== SaleStatusEnum.COMPLETO) {
       await this.vehiclesService.update(sale.vehicle_id, {
         status: VehicleStatusEnum.DISPONIVEL,
       });
