@@ -8,13 +8,11 @@ import {
   Query,
   Req,
   UseGuards,
-  HttpException,
-  HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@/modules/auth/guards/auth.guard';
 import { Request } from 'express';
-import { VehiclesService } from './vehicles.service';
-import { FindAllVehiclesDTO, CreateVehicleDTO, UpdateVehicleDTO } from './dto';
+import { VehiclesService } from '../services/vehicles.service';
+import { FindAllVehiclesDTO, CreateVehicleDTO, UpdateVehicleDTO } from '../dto';
 
 @Controller('vehicles')
 export class VehiclesController {
@@ -37,11 +35,7 @@ export class VehiclesController {
   @UseGuards(AuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    const vehicle = await this.vehiclesService.findOne(id);
-    if (!vehicle) {
-      throw new HttpException('Veículo não encontrado', HttpStatus.NOT_FOUND);
-    }
-    return vehicle;
+    return this.vehiclesService.findOne({ id });
   }
 
   @UseGuards(AuthGuard)

@@ -4,6 +4,7 @@ import { VehiclesModule } from './modules/vehicles/vehicles.module';
 import { FipeModule } from './modules/fipe/fipe.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { CustomersModule } from './modules/customers/customers.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { UsersModule } from './modules/users/users.module';
     UsersModule,
     VehiclesModule,
     FipeModule,
+    CustomersModule,
   ],
 })
 export class AppModule {}

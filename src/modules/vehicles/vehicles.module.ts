@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { VehiclesController } from './vehicles.controller';
+import { VehiclesController } from './controllers/vehicles.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Vehicle } from './entities/vehicle';
+import { Vehicle } from './entities/vehicle.entity';
 
 @Module({
   imports: [

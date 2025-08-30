@@ -1,5 +1,5 @@
 export * from './users.module';
-export * from './users.service';
-export * from './users.controller';
+export * from './services/users.service';
+export * from './controllers/users.controller';
 export * from './entities/user.entity';
 export * from './dto/update-user.dto';

@@ -1,24 +1,34 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { Column, Entity, OneToMany } from 'typeorm';
 
-/**
- * @todo converter para etidade do typeorm
- */
+import { Sale } from '@/modules/sales/entities/sale.entity';
+import { BaseEntity } from '@/modules/common/infra/entities/base-entity';
+import { UserRoleEnum } from '@/modules/users/enums/user.enum';
 
-export class User {
-  @ApiProperty({ description: 'ID do usuário' })
-  id: string;
+@Entity('users')
+export class User extends BaseEntity {
+  @Column()
+  active: boolean;
 
-  @ApiProperty({ description: 'Nome do usuário' })
+  @Column()
   name: string;
 
-  @ApiProperty({ description: 'Email do usuário' })
+  @Column()
   email: string;
 
-  @ApiProperty({ description: 'Data de criação do usuário' })
-  created_at: Date;
+  @Column({ select: false })
+  password: string;
 
-  @ApiProperty({ description: 'Data da última atualização do usuário' })
-  updated_at: Date;
+  @Column({
+    default: UserRoleEnum.VENDEDOR,
+  })
+  role: string;
 
-  password?: string;
+  @Column({ nullable: true })
+  cnpj?: string;
+
+  @Column({ nullable: true })
+  cpf?: string;
+
+  @OneToMany(() => Sale, (sale) => sale.user)
+  sales?: Sale[];
 }
