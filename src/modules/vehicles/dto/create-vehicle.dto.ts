@@ -10,8 +10,20 @@ export class CreateVehicleDTO {
   @IsNumber()
   year: number;
 
+  @IsOptional()
+  year_model: number;
+
   @IsNumber()
   price: number;
+
+  @IsOptional()
+  price_fipe: number;
+
+  @IsOptional()
+  price_fipe_date: Date;
+
+  @IsOptional()
+  mileage: number;
 
   @IsOptional()
   @IsString()
