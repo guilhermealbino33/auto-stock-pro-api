@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { UpdateUserDTO } from '../dto/update-user.dto';
 import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -28,7 +28,7 @@ export class UsersService {
    * -ajusar auth para usar o typeorm
    */
 
-  async findOne(id: string): Promise<User | null> {
+  async findOne(id: number): Promise<User | null> {
     const user = await this.usersRepository.findOne({ where: { id } });
 
     if (!user) {
@@ -38,7 +38,7 @@ export class UsersService {
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(id: number, updateUserDto: UpdateUserDTO): Promise<User> {
     const user = await this.usersRepository.findOne({ where: { id } });
 
     if (!user) {
@@ -69,8 +69,8 @@ export class UsersService {
         );
       }
 
-      const userWithPassword = await this.usersRepository.findOneBy({
-        id,
+      const userWithPassword = await this.usersRepository.findOne({
+        where: { id: Number(id) },
       });
 
       const isPasswordValid = await bcrypt.compare(
