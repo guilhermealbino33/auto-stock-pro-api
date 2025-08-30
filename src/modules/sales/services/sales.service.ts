@@ -5,12 +5,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Sale, SaleStatus } from '../entities/sale.entity';
+import { Sale } from '../entities/sale.entity';
 import { CreateSaleDTO } from '../dto/create-sale.dto';
 import { UpdateSaleDto } from '../dto/update-sale.dto';
 import { VehiclesService } from '../../vehicles/services/vehicles.service';
 import { CustomersService } from '../../customers/services/customers.service';
 import { VehicleStatusEnum } from '../../vehicles/enums/vehicle.enum';
+import { SaleStatusEnum } from '../enums/sales.enum';
 
 @Injectable()
 export class SalesService {
@@ -25,15 +26,15 @@ export class SalesService {
     const vehicle = await this.vehiclesService.findOne({
       id: createSaleDto.vehicle_id,
     });
-    if (vehicle.status !== 'available') {
-      throw new BadRequestException('Veículo não está disponível para venda');
+
+    if (vehicle.status !== VehicleStatusEnum.DISPONIVEL) {
+      throw new BadRequestException('Veículo não está disponível para venda.');
     }
 
-    // Validar se cliente existe
     await this.customersService.findOne(createSaleDto.customer_id);
 
-    // Validar veículo de troca se fornecido
     let tradeInVehicle = null;
+
     if (createSaleDto.trade_in_vehicle_plate) {
       tradeInVehicle = await this.vehiclesService.findOne({
         plate: createSaleDto.trade_in_vehicle_plate,
@@ -48,7 +49,6 @@ export class SalesService {
       }
     }
 
-    // Calcular margem de lucro
     const profitProjection = this.calculateProfitProjection(
       createSaleDto.agreed_price,
       vehicle.price_fipe || vehicle.price,
@@ -61,14 +61,13 @@ export class SalesService {
       created_by_id: userId,
     });
 
-    const savedSale = await this.salesRepository.save(sale);
-
-    // Reservar o veículo
     await this.vehiclesService.update(createSaleDto.vehicle_id, {
       status: VehicleStatusEnum.RESERVADO,
     });
 
-    return this.findOne(savedSale.id);
+    await this.salesRepository.save(sale);
+
+    return sale;
   }
 
   async findAll(): Promise<Sale[]> {
@@ -98,7 +97,6 @@ export class SalesService {
       throw new NotFoundException('Venda não encontrada.');
     }
 
-    // Recalcular margem se preços mudaram
     if (updateSaleDto.agreed_price || updateSaleDto.trade_in_value) {
       const newAgreedPrice = updateSaleDto.agreed_price || sale.agreed_price;
       const newTradeInValue =
@@ -137,19 +135,19 @@ export class SalesService {
 
   async getSalesReport(): Promise<any> {
     const totalSales = await this.salesRepository.count({
-      where: { status: SaleStatus.COMPLETED },
+      where: { status: SaleStatusEnum.COMPLETO },
     });
 
     const totalRevenue = await this.salesRepository
       .createQueryBuilder('sale')
       .select('SUM(sale.agreed_price)', 'total')
-      .where('sale.status = :status', { status: SaleStatus.COMPLETED })
+      .where('sale.status = :status', { status: SaleStatusEnum.COMPLETO })
       .getRawOne();
 
     const totalProfit = await this.salesRepository
       .createQueryBuilder('sale')
       .select('SUM(sale.profit_projection)', 'total')
-      .where('sale.status = :status', { status: SaleStatus.COMPLETED })
+      .where('sale.status = :status', { status: SaleStatusEnum.COMPLETO })
       .getRawOne();
 
     return {
@@ -175,18 +173,18 @@ export class SalesService {
 
   private async updateVehicleStatusBasedOnSale(
     sale: Sale,
-    newStatus: SaleStatus
+    newStatus: SaleStatusEnum
   ): Promise<void> {
     let vehicleStatus = VehicleStatusEnum.DISPONIVEL;
 
     switch (newStatus) {
-      case SaleStatus.PENDING:
+      case SaleStatusEnum.NEGOCIANDO:
         vehicleStatus = VehicleStatusEnum.RESERVADO;
         break;
-      case SaleStatus.COMPLETED:
+      case SaleStatusEnum.COMPLETO:
         vehicleStatus = VehicleStatusEnum.VENDIDO;
         break;
-      case SaleStatus.CANCELLED:
+      case SaleStatusEnum.CANCELADO:
         vehicleStatus = VehicleStatusEnum.DISPONIVEL;
         break;
     }

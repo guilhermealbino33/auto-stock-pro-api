@@ -1,10 +1,14 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateSaleDTO } from './create-sale.dto';
 import { IsOptional, IsEnum } from 'class-validator';
-import { SaleStatus } from '../entities/sale.entity';
+import { SalePaymentMethodEnum, SaleStatusEnum } from '../enums/sales.enum';
 
 export class UpdateSaleDto extends PartialType(CreateSaleDTO) {
   @IsOptional()
-  @IsEnum(SaleStatus)
-  status?: SaleStatus;
+  @IsEnum(SaleStatusEnum)
+  status?: SaleStatusEnum;
+
+  @IsOptional()
+  @IsEnum(SalePaymentMethodEnum)
+  payment_method?: SalePaymentMethodEnum;
 }

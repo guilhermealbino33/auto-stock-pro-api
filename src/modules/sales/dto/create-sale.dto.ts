@@ -1,4 +1,11 @@
-import { IsNumber, IsOptional, IsString, IsPositive } from 'class-validator';
+import {
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsPositive,
+  IsEnum,
+} from 'class-validator';
+import { SalePaymentMethodEnum } from '../enums/sales.enum';
 
 export class CreateSaleDTO {
   @IsNumber()
@@ -29,4 +36,8 @@ export class CreateSaleDTO {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  @IsOptional()
+  @IsEnum(SalePaymentMethodEnum)
+  payment_method?: string;
 }
