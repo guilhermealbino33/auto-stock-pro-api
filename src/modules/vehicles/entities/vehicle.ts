@@ -20,4 +20,6 @@ export class Vehicle {
   color?: string;
 
   plate?: string;
+
+  status: string;
 }

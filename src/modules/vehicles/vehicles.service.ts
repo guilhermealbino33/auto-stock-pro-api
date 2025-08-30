@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { Vehicle } from './entities/vehicle';
 import { CreateVehicleDTO, UpdateVehicleDTO } from './dto';
 
@@ -34,12 +34,8 @@ export class VehiclesService {
     });
   }
 
-  async findOne(id: number) {
-    return this.vehiclesRepository.findOne({
-      where: {
-        id,
-      },
-    });
+  async findOne(data: FindOptionsWhere<Vehicle>) {
+    return this.vehiclesRepository.findOne({ where: data });
   }
 
   async update(
@@ -55,6 +51,7 @@ export class VehiclesService {
       price_fipe_date,
       year,
       year_model,
+      status,
     }: UpdateVehicleDTO
   ) {
     /**
@@ -74,6 +71,7 @@ export class VehiclesService {
       price_fipe_date,
       year,
       year_model,
+      status,
     });
   }
 }

@@ -1,4 +1,5 @@
-import { IsString, IsNumber, IsOptional } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsEnum } from 'class-validator';
+import { VehicleStatusEnum, VehicleTypeEnum } from '../enums/vehicle.enum';
 
 export class CreateVehicleDTO {
   @IsString()
@@ -28,6 +29,14 @@ export class CreateVehicleDTO {
   @IsOptional()
   @IsString()
   color?: string;
+
+  @IsOptional()
+  @IsEnum(VehicleTypeEnum)
+  type?: string;
+
+  @IsOptional()
+  @IsEnum(VehicleStatusEnum)
+  status?: string;
 
   @IsOptional()
   @IsString()
