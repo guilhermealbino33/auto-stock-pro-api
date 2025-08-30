@@ -3,7 +3,7 @@ import { VehiclesController } from './vehicles.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Vehicle } from './entities/vehicle';
+import { Vehicle } from './entities/vehicle.entity';
 
 @Module({
   imports: [

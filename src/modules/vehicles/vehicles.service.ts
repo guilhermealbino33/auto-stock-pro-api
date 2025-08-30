@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { Vehicle } from './entities/vehicle';
+import { Vehicle } from './entities/vehicle.entity';
 import { CreateVehicleDTO, UpdateVehicleDTO } from './dto';
 
 @Injectable()
@@ -35,7 +35,13 @@ export class VehiclesService {
   }
 
   async findOne(data: FindOptionsWhere<Vehicle>) {
-    return this.vehiclesRepository.findOne({ where: data });
+    const vehicle = this.vehiclesRepository.findOne({ where: data });
+
+    if (!vehicle) {
+      throw new NotFoundException('Veículo não encontrado.');
+    }
+
+    return vehicle;
   }
 
   async update(
