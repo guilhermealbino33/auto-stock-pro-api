@@ -124,3 +124,6 @@ yarn-error.log*
 .vscode/
 *.swp
 *.swo
+
+actions.md
+tasks.md
