@@ -1,51 +1,79 @@
 import { Injectable } from '@nestjs/common';
-import {
-  getAllVehicles,
-  getVehicleById,
-  createVehicle,
-  updateVehicle,
-  updateVehicleStatus,
-  Vehicle,
-} from '@/lib/database';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Vehicle } from './entities/vehicle';
+import { CreateVehicleDTO, UpdateVehicleDTO } from './dto';
 
 @Injectable()
 export class VehiclesService {
-  async getAllVehicles(limit: number, offset: number) {
-    const vehicles = await getAllVehicles(limit, offset);
+  constructor(
+    @InjectRepository(Vehicle)
+    private readonly vehiclesRepository: Repository<Vehicle>
+  ) {}
 
-    return vehicles.map((vehicle) => {
-      if (!Array.isArray(vehicle.photos)) {
-        if (typeof vehicle.photos === 'string') {
-          try {
-            vehicle.photos = vehicle.photos.startsWith('[')
-              ? JSON.parse(vehicle.photos)
-              : vehicle.photos
-                ? [vehicle.photos]
-                : [];
-          } catch {
-            vehicle.photos = [];
-          }
-        } else {
-          vehicle.photos = [];
-        }
-      }
-      return vehicle;
+  async create(userId: string, data: CreateVehicleDTO) {
+    /**
+     * @todo
+     * - adicionar userId
+     * - como forma de action history
+     * - a placa do veículo deve ser única
+     * - historico de venda, aquisicao, será por placa
+     */
+
+    const vehicle = this.vehiclesRepository.create(data);
+
+    await this.vehiclesRepository.save(vehicle);
+
+    return vehicle;
+  }
+
+  async paginate(limit: number, offset: number) {
+    return this.vehiclesRepository.find({
+      take: limit,
+      skip: offset,
     });
   }
 
-  async createVehicle(userId: string, data: any) {
-    return createVehicle(userId, data);
+  async findOne(id: number) {
+    return this.vehiclesRepository.findOne({
+      where: {
+        id,
+      },
+    });
   }
 
-  async getVehicleById(vehicleId: string, userId: string) {
-    return getVehicleById(vehicleId, userId);
-  }
+  async update(
+    id: number,
+    {
+      brand,
+      color,
+      mileage,
+      model,
+      plate,
+      price,
+      price_fipe,
+      price_fipe_date,
+      year,
+      year_model,
+    }: UpdateVehicleDTO
+  ) {
+    /**
+     * @todo
+     * - adicionar userId
+     * - adicionar regras de negócio
+     */
 
-  async updateVehicle(vehicleId: string, userId: string, data: any) {
-    return updateVehicle(vehicleId, userId, data);
-  }
-
-  async updateVehicleStatus(vehicleId: string, status: Vehicle['status']) {
-    return updateVehicleStatus(vehicleId, status);
+    return this.vehiclesRepository.update(id, {
+      brand,
+      color,
+      mileage,
+      model,
+      plate,
+      price,
+      price_fipe,
+      price_fipe_date,
+      year,
+      year_model,
+    });
   }
 }
