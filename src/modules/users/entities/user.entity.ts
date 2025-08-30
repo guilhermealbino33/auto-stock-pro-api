@@ -29,6 +29,6 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   cpf?: string;
 
-  @OneToMany(() => Sale, (sale) => sale.created_by_id)
+  @OneToMany(() => Sale, (sale) => sale.user)
   sales?: Sale[];
 }
