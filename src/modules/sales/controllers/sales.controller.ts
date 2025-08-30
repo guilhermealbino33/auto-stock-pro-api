@@ -9,9 +9,9 @@ import {
   Request,
   ParseIntPipe,
 } from '@nestjs/common';
-import { SalesService } from './sales.service';
-import { CreateSaleDTO } from './dto/create-sale.dto';
-import { UpdateSaleDto } from './dto/update-sale.dto';
+import { SalesService } from '../services/sales.service';
+import { CreateSaleDTO } from '../dto/create-sale.dto';
+import { UpdateSaleDto } from '../dto/update-sale.dto';
 
 @Controller('sales')
 export class SalesController {

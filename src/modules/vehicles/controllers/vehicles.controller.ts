@@ -11,8 +11,8 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@/modules/auth/guards/auth.guard';
 import { Request } from 'express';
-import { VehiclesService } from './vehicles.service';
-import { FindAllVehiclesDTO, CreateVehicleDTO, UpdateVehicleDTO } from './dto';
+import { VehiclesService } from '../services/vehicles.service';
+import { FindAllVehiclesDTO, CreateVehicleDTO, UpdateVehicleDTO } from '../dto';
 
 @Controller('vehicles')
 export class VehiclesController {

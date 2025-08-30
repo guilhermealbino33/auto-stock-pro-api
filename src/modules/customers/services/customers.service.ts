@@ -1,15 +1,19 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Customer } from './entities/customer.entity';
-import { CreateCustomerDTO } from './dto/create-customer.dto';
-import { UpdateCustomerDTO } from './dto/update-customer.dto';
+import { Customer } from '../entities/customer.entity';
+import { CreateCustomerDTO } from '../dto/create-customer.dto';
+import { UpdateCustomerDTO } from '../dto/update-customer.dto';
 
 @Injectable()
 export class CustomersService {
   constructor(
     @InjectRepository(Customer)
-    private customersRepository: Repository<Customer>,
+    private customersRepository: Repository<Customer>
   ) {}
 
   async create(createCustomerDto: CreateCustomerDTO): Promise<Customer> {
@@ -51,11 +55,17 @@ export class CustomersService {
     });
   }
 
-  async update(id: number, updateCustomerDto: UpdateCustomerDTO): Promise<Customer> {
+  async update(
+    id: number,
+    updateCustomerDto: UpdateCustomerDTO
+  ): Promise<Customer> {
     const customer = await this.findOne(id);
 
     // Verificar conflito de CPF/CNPJ se sendo alterado
-    if (updateCustomerDto.cpf_cnpj && updateCustomerDto.cpf_cnpj !== customer.cpf_cnpj) {
+    if (
+      updateCustomerDto.cpf_cnpj &&
+      updateCustomerDto.cpf_cnpj !== customer.cpf_cnpj
+    ) {
       const existingCustomer = await this.customersRepository.findOne({
         where: { cpf_cnpj: updateCustomerDto.cpf_cnpj },
       });

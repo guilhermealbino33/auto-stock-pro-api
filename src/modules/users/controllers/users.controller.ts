@@ -14,10 +14,10 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthGuard } from '../auth/guards/auth.guard';
-import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { AuthGuard } from '../../auth/guards/auth.guard';
+import { UsersService } from '../services/users.service';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { User } from '../entities/user.entity';
 
 @ApiTags('users')
 @ApiBearerAuth()

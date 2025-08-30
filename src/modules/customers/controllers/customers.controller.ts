@@ -10,7 +10,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 
-import { CustomersService } from '../customers.service';
+import { CustomersService } from '../services/customers.service';
 import { CreateCustomerDTO } from '../dto/create-customer.dto';
 import { UpdateCustomerDTO } from '../dto/update-customer.dto';
 

@@ -5,12 +5,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Sale, SaleStatus } from './entities/sale.entity';
-import { CreateSaleDTO } from './dto/create-sale.dto';
-import { UpdateSaleDto } from './dto/update-sale.dto';
-import { VehiclesService } from '../vehicles/vehicles.service';
-import { CustomersService } from '../customers/customers.service';
-import { VehicleStatusEnum } from '../vehicles/enums/vehicle.enum';
+import { Sale, SaleStatus } from '../entities/sale.entity';
+import { CreateSaleDTO } from '../dto/create-sale.dto';
+import { UpdateSaleDto } from '../dto/update-sale.dto';
+import { VehiclesService } from '../../vehicles/services/vehicles.service';
+import { CustomersService } from '../../customers/services/customers.service';
+import { VehicleStatusEnum } from '../../vehicles/enums/vehicle.enum';
 
 @Injectable()
 export class SalesService {
