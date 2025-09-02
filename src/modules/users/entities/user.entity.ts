@@ -7,7 +7,7 @@ import { UserRoleEnum } from '@/modules/users/enums/user.enum';
 @Entity('users')
 export class User extends BaseEntity {
   @Column()
-  active: boolean;
+  is_active: boolean;
 
   @Column()
   name: string;
