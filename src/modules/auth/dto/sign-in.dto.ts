@@ -4,7 +4,7 @@ import { IsEmail, IsNotEmpty } from 'class-validator';
 export class SignInDTO {
   @IsEmail({}, { message: ValidationMessages.isEmail })
   @IsNotEmpty({ message: ValidationMessages.isNotEmpty })
-  username: string;
+  email: string;
 
   @IsNotEmpty({ message: ValidationMessages.isNotEmpty })
   password: string;

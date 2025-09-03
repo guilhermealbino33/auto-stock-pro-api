@@ -20,7 +20,7 @@ export class AuthService {
   ) {}
 
   async signIn({
-    username,
+    email: username,
     password,
   }: SignInDTO): Promise<SingInResponseInterface> {
     const user = await this.usersRepository.findOne({
