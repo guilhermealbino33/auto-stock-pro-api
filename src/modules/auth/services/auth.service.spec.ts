@@ -21,11 +21,11 @@ const makeSut = async (): Promise<MakeSutTypes> => {
   } as unknown as jest.Mocked<Repository<User>>;
 
   const jwtService = {
-    signAsync: jest.fn(),
+    signAsync: jest.fn().mockResolvedValue('mocked-token'),
   } as unknown as jest.Mocked<JwtService>;
 
   const cryptService = {
-    compare: jest.fn(),
+    compare: jest.fn().mockResolvedValue(true),
   } as unknown as jest.Mocked<CryptService>;
 
   const sut = new AuthService(
@@ -100,13 +100,15 @@ describe('AuthService', () => {
     });
 
     it('should return access token and role when credentials are valid', async () => {
-      const { sut, usersRepository, jwtService } = await makeSut();
+      const { sut, usersRepository, jwtService, cryptService } =
+        await makeSut();
       const signInData: SignInDTO = {
         email: 'test@example.com',
         password: 'correct-password',
       };
 
       usersRepository.findOne.mockResolvedValueOnce(mockUser);
+      cryptService.compare.mockResolvedValueOnce(true);
       jwtService.signAsync.mockResolvedValueOnce('mocked-jwt-token');
 
       const result = await sut.signIn(signInData);
@@ -162,12 +164,14 @@ describe('AuthService', () => {
         username: 'test@example.com',
         role: UserRoleEnum.ADMIN,
         code: 'test-code',
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + 3600,
         url_profile_picture: 'http://example.com/profile.jpg',
       } as unknown as RequestUserInterface;
 
       const result = await sut.getProfile(mockRequestUser);
 
-      expect(result).toBe(mockRequestUser);
+      expect(result).toEqual(mockRequestUser);
     });
   });
 });
