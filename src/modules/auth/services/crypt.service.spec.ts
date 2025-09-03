@@ -75,14 +75,15 @@ describe('CryptService', () => {
   describe('hash', () => {
     it('should call bcrypt.hash with correct parameters', async () => {
       const { cryptService } = makeSut();
-
       const password = 'test-password';
+      const hashSpy = jest
+        .spyOn(bcrypt, 'hash')
+        .mockResolvedValueOnce('hashed-password');
 
-      expect(cryptService.hash(password)).toHaveBeenCalledTimes(1);
-      expect(cryptService.hash(password)).toHaveBeenCalledWith(
-        password,
-        jwtConstants.SALT
-      );
+      await cryptService.hash(password);
+
+      expect(hashSpy).toHaveBeenCalledTimes(1);
+      expect(hashSpy).toHaveBeenCalledWith(password, jwtConstants.SALT);
     });
 
     it('should return  hashed password', async () => {
