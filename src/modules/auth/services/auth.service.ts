@@ -55,6 +55,27 @@ export class AuthService {
     };
   }
 
+  async refreshToken(userId: number) {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user || !user.is_active) {
+      throw new UnauthorizedException('Usuário não encontrado ou inativo');
+    }
+
+    const payload = {
+      sub: user.id,
+      username: user.email,
+      role: user.role,
+    };
+
+    return {
+      accessToken: await this.jwtService.signAsync(payload),
+      refreshToken: await this.jwtService.signAsync(
+        { sub: user.id },
+        { expiresIn: '7d' } // Refresh token com validade maior
+      ),
+    };
+  }
+
   async signOut(): Promise<void> {
     /**
      * @todo
